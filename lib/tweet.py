@@ -38,4 +38,4 @@ class Tweet:
         # Mon Sep 24 03:35:21 +0000 2012
         d = date_str.split(' ')
         date_str = ' '.join(d[:4]) + d[5]
-        datetime.strtime("%a %b %d %H:%M:%S %Y")
+        datetime.strptime("%a %b %d %H:%M:%S %Y")
