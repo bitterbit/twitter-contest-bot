@@ -32,6 +32,7 @@ class ContestScanner:
 		self.scanned_ids[tweet.get_id()] = True
 	
 	def _exists(self, tweet):
+		print "We saw this tweet berfore"
 		if tweet.get_id() in self.scanned_ids:
 			return True
 		return False

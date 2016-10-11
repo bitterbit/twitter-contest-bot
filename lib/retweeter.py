@@ -30,9 +30,8 @@ class ReTweeter:
 		return self._tweet_contains_keyword(tweet, self.fav_keywords)
 	
 	def _tweet_contains_keyword(self, tweet, keywords):
-		words = tweet.get_text().lower().split(' ')
-		for word in words:
-			if word in keywords:
+		for keyword in keywords:
+			if keyword in tweet.get_text().lower():
 				return True
 		return False
 		
