@@ -3,43 +3,53 @@ from TwitterAPI import TwitterAPI
 class safeTwitter(object):
     rate_limit_precent = 100
 
-    def checkError( self, r ):
+    def _check_error( self, r ):
 	r = r.json()
 	if 'errors' in r:
-		print("We got an error message: " + r['errors'][0]['message'] + " Code: " + str(r['errors'][0]['code']) )
-		#sys.exit(r['errors'][0]['code'])
+	    print("We got an error message: " + r['errors'][0]['message'] + " Code: " + str(r['errors'][0]['code']) )
+	    #sys.exit(r['errors'][0]['code'])
 
-    def checkRateLimit(self):
+    def _check_rate_limit_search(self):
 	
 	r = api.request('application/rate_limit_status').json()
 
 	for res_family in r['resources']:
-		for res in r['resources'][res_family]:
-			limit = r['resources'][res_family][res]['limit']
-			remaining = r['resources'][res_family][res]['remaining']
-			self_limit_prcent = float(remaining)/float(limit)*100
+	    for res in r['resources'][res_family]:
+		limit = r['resources'][res_family][res]['limit']
+		remaining = r['resources'][res_family][res]['remaining']
+		prcent = float(remaining)/float(limit)*100
 
-			if res == "/search/tweets":
-				ratelimit_search=[limit,remaining,percent]
+		if res == "/search/tweets":
+		    if precent < self.min_search_rate_limit:
+                        time.sleep(30)
+                        _check_rate_limit_search()
 
-			if res == "/application/rate_limit_status":
-				ratelimit=[limit,remaining,percent]
+                            
+    def _check_rate_limit_post(self):
+        r = api.request('application/rate_limit_status').json()
 
-			#print(res_family + " -> " + res + ": " + str(percent))
-			if percent < 5.0:
-				LogAndPrint(res_family + " -> " + res + ": " + str(percent) + "  !!! <5% Emergency exit !!!")				
-				sys.exit(res_family + " -> " + res + ": " + str(percent) + "  !!! <5% Emergency exit !!!")
-			elif percent < 30.0:
-				LogAndPrint(res_family + " -> " + res + ": " + str(percent) + "  !!! <30% alert !!!")				
-			elif percent < 70.0:
-				print(res_family + " -> " + res + ": " + str(percent))
+	for res_family in r['resources']:
+	    for res in r['resources'][res_family]:
+		limit = r['resources'][res_family][res]['limit']
+		remaining = r['resources'][res_family][res]['remaining']
+		prcent = float(remaining)/float(limit)*100
+                
+            if res == "/application/rate_limit_status":
+                if precent < self.min_post_rate_limit:
+                    time.sleep(30)
+                    _check_rate_limit_post()
 
+    def Retweet(self, tweet):
+        _check_rate_limit_post()
+        r = api.request('statuses/retweet/:' + str(tweet.get_id()))
+	CheckError(r)
 
-    def Retweet(tweet):
-        pass
+    def Favorite(self, tweet):
+        _check_rate_limit_post()
+        r = api.request('favorites/create', {'id': tweet.get_id()})
+	CheckError(r)
 
-    def Favorite(tweet):
-        pass
-
-    def Query(serch_query, count):
-        pass
+    def serch_tweets(self, serch_query, count):
+        _check_rate_limit_search()
+        r = api.request('search/tweets', {'q':search_query, 'result_type':"mixed", 'count':count})
+	CheckError(r)
