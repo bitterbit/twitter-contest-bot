@@ -12,10 +12,10 @@ class Tweet:
 
     def is_retweet(self):
         return self.is_retweet
-        
+
     def get_id(self):
         return self.id
-        
+
     def get_text(self):
         return self.text
 
@@ -23,19 +23,19 @@ class Tweet:
         # text, id, user, screen_name
         self.text =  item['text'].replace("\n","")
         self.is_retweet = False
-        
+
         if 'retweeted_status' in item:
             item = item['retweeted_status']
             self.is_retweet = True
-        
+
         self.id = item['id']
         self.author_id = item['user']
         self.author_name = item['screen_name']
         self.retweet_count = item['retweet_count']
         self.created_at = self._parse_date(item['created_at'])
-    
-	def _parse_date(self, date_str):
+
+    def _parse_date(self, date_str):
         # Mon Sep 24 03:35:21 +0000 2012
         d = date_str.split(' ')
-        date_str = ' '.join(d[:4]) + d[5] 
-		datetime.strtime("%a %b %d %H:%M:%S %Y")
+        date_str = ' '.join(d[:4]) + d[5]
+        datetime.strtime("%a %b %d %H:%M:%S %Y")
