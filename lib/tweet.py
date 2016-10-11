@@ -29,8 +29,8 @@ class Tweet:
             self.is_retweet = True
 
         self.id = item['id']
-        self.author_id = item['user']
-        self.author_name = item['screen_name']
+        self.user = item['user']
+        self.username = self.user['screen_name']
         self.retweet_count = item['retweet_count']
         self.created_at = self._parse_date(item['created_at'])
 
