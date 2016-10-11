@@ -8,7 +8,7 @@ class ContestScanner:
 		self.scanned_ids = dict()
 		
 	def scan(self, query):
-		tweets = self.api.GetTweets(query, self.MAX_RESULTS)
+		tweets = self.api.serch_tweets(query, self.MAX_RESULTS)
 
 		for tweet in tweets:
 			if not self._exists(tweet) and self._is_valid(tweet):

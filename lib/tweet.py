@@ -12,6 +12,9 @@ class Tweet:
         
     def get_id(self):
         return self.id
+        
+    def get_text(self):
+        return self.text
 
     def _parse_twitter_item(self, item):
         # text, id, user, screen_name
