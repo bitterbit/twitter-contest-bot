@@ -1,3 +1,5 @@
+from datetime import datetime
+
 class Tweet:
     def __init__(self, twitter_item):
         self.id = ''
@@ -5,6 +7,7 @@ class Tweet:
         self.author_id = ''
         self.author_name = ''
         self.is_retweet = False
+        self.retweet_count = 0
         self._parse_twitter_item(twitter_item)
 
     def is_retweet(self):
@@ -28,3 +31,11 @@ class Tweet:
         self.id = item['id']
         self.author_id = item['user']
         self.author_name = item['screen_name']
+        self.retweet_count = item['retweet_count']
+        self.created_at = self._parse_date(item['created_at'])
+    
+	def _parse_date(self, date_str):
+        # Mon Sep 24 03:35:21 +0000 2012
+        d = date_str.split(' ')
+        date_str = ' '.join(d[:4]) + d[5] 
+		datetime.strtime("%a %b %d %H:%M:%S %Y")
