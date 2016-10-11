@@ -58,15 +58,15 @@ class SafeTwitter(object):
 
     def favorite(self, tweet):
         self._check_rate_limit_post()
-        r = sef.api.request('favorites/create', {'id': tweet.get_id()})
+        r = self.api.request('favorites/create', {'id': tweet.get_id()})
         print "favorite tweet id: ", tweet.get_id()
         self._check_error(r)
 
     def follow(self, tweet):
         self._check_rate_limit_post()
         r = self.api.request('friendships/create',
-                             {'screen_name': twitter.screen_name})
-        print "favorite tweet id: ", tweet.get_id()
+                             {'screen_name': tweet.username})
+        print "follow tweet id: ", tweet.get_id()
         self._check_error(r)
 
     def serch_tweets(self, search_query, count):
