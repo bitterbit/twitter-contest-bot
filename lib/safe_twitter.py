@@ -3,9 +3,10 @@ from tweet import Tweet
 
 class SafeTwitter(object):
 
-    def __init__(self, min_ratelimit_search, min_ratelimit_post):
+    def __init__(self, min_ratelimit_search, min_ratelimit_post, twitter_api):
         self.min_search_rate_limit = min_ratelimit_search
         self.min_post_rate_limit = min_ratelimit_post
+        self.api = twitter_api
 
     def _check_error( self, r ):
     	r = r.json()
@@ -16,7 +17,7 @@ class SafeTwitter(object):
             return False
 
     def _check_rate_limit_search(self):
-    	r = api.request('application/rate_limit_status').json()
+    	r = self.api.request('application/rate_limit_status').json()
 
     	for res_family in r['resources']:
     	    for res in r['resources'][res_family]:
@@ -31,7 +32,7 @@ class SafeTwitter(object):
                     self._check_rate_limit_search()
 
     def _check_rate_limit_post(self):
-        r = api.request('application/rate_limit_status').json()
+        r = self.api.request('application/rate_limit_status').json()
 
     	for res_family in r['resources']:
     	    for res in r['resources'][res_family]:
@@ -47,20 +48,26 @@ class SafeTwitter(object):
 
     def retweet(self, tweet):
         self._check_rate_limit_post()
-        r = api.request('statuses/retweet/:' + str(tweet.get_id()))
+        r = self.api.request('statuses/retweet/:' + str(tweet.get_id()))
         print "retweet to tweed id: ", str(tweet.get_id()), " text: ", tweet.get_text()
 	    self._check_error(r)
 
     def favorite(self, tweet):
         self._check_rate_limit_post()
-        r = api.request('favorites/create', {'id': tweet.get_id()})
+        r = sef.api.request('favorites/create', {'id': tweet.get_id()})
+        print "favorite tweet id: ", tweet.get_id()
+	    self._check_error(r)
+
+    def follow(self, tweet):
+        self._check_rate_limit_post()
+        r = self.api.request('friendships/create', {'screen_name': twitter.screen_name})
         print "favorite tweet id: ", tweet.get_id()
 	    self._check_error(r)
 
     def serch_tweets(self, serch_query, count):
         self._check_rate_limit_search()
         tweets = []
-        r = api.request('search/tweets', {'q':search_query, 'result_type':"mixed", 'count':count})
+        r = self.api.request('search/tweets', {'q':search_query, 'result_type':"mixed", 'count':count})
 	    error = self._check_error(r)
         if not error:
             print "found ", len(r), " new tweets for ", serch_query, " query"
