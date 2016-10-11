@@ -18,23 +18,23 @@ class SafeTwitter(object):
         return False
 
     def _check_rate_limit_search(self):
-        r = self.api.request('application/rate_limit_status')
-        err = self._check_error(r)
-        if not err:
-            r = r.json()
-            for res_family in r['resources']:
-                for res in r['resources'][res_family]:
-                    limit = r['resources'][res_family][res]['limit']
-                    remaining = r['resources'][res_family][res]['remaining']
-                    precent = float(remaining) / float(limit) * 100
-
-                if res == "/search/tweets":
-                    if precent < self.min_search_rate_limit:
-                        print "search rate limit too low: ", precent, " want: ", self.min_search_rate_limit, " waiting 30 sec"
-                        time.sleep(30)
-                        self._check_rate_limit_search()
+        self._check_limit_loop('/search/tweets', self.min_search_rate_limit)
 
     def _check_rate_limit_post(self):
+        self._check_limit_loop('/application/rate_limit_status', self.min_post_rate_limit)
+
+    def _check_limit_loop(self, limit_name, min_percent, sleep=30):
+        while True:
+            percent = self._get_limit_percent(limit_name)
+            if percent is None:
+                print "ERROR"
+            elif percent < min_percent:
+                print "post rate limit too low: ", precent, " want: ", min_percent, " waiting", sleep, "sec"
+                time.sleep(sleep)
+            else:
+                return
+
+    def _get_limit_percent(self, limit_name):
         r = self.api.request('application/rate_limit_status')
         err = self._check_error(r)
         if not err:
@@ -43,13 +43,12 @@ class SafeTwitter(object):
                 for res in r['resources'][res_family]:
                     limit = r['resources'][res_family][res]['limit']
                     remaining = r['resources'][res_family][res]['remaining']
-                    precent = float(remaining) / float(limit) * 100
+                    perecent = float(remaining) / float(limit) * 100
+                    if res == limit_name:
+                        return perecent
 
-                    if res == "/application/rate_limit_status":
-                        print "post rate limit too low: ", precent, " want: ", self.min_post_rate_limit, " waiting 30 sec"
-                        if precent < self.min_post_rate_limit:
-                            time.sleep(30)
-                            self._check_rate_limit_post()
+        return None
+
 
     def retweet(self, tweet):
         self._check_rate_limit_post()
