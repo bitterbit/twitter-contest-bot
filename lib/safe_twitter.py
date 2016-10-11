@@ -10,7 +10,6 @@ class SafeTwitter(object):
         self.api = twitter_api
 
     def _check_error(self, r):
-        print "status code: ", r.status_code
         if r.status_code != 200:
             r = r.json()
             print("We got an error message: " +
@@ -20,7 +19,6 @@ class SafeTwitter(object):
 
     def _check_rate_limit_search(self):
         r = self.api.request('application/rate_limit_status')
-        print "r is: ", r
         err = self._check_error(r)
         if not err:
             r = r.json()
@@ -81,5 +79,5 @@ class SafeTwitter(object):
         if not error:
             for tweet_item in r:
                 tweets.append(Tweet(tweet_item))
-        print "found ", len(tweets), " new tweets for ", serch_query, " query"
+        print "found ", len(tweets), " new tweets for ", search_query, " query"
         return tweets
