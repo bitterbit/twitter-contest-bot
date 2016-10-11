@@ -32,6 +32,7 @@ class ReTweeter:
 	def _tweet_contains_keyword(self, tweet, keywords):
 		for keyword in keywords:
 			if keyword in tweet.get_text().lower():
+				print "found", keyword, "in", tweet.get_text.lower()
 				return True
 		return False
 		
