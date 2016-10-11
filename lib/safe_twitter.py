@@ -10,6 +10,6 @@ class SafeTwitter(object):
         """ Returns status """
         pass
 
-    def Query(self, serch_query, count):
+    def GetTweets(self, query, max):
         """ Returns []lib.tweet """
         pass
