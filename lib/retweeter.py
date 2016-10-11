@@ -1,4 +1,8 @@
+import time
+
 class ReTweeter:
+	SLEEP = 1
+	
 	def __init__(self, api, fav_keywords, follow_keywords):
 		self.api = api
 		self.fav_keywords = fav_keywords
@@ -16,6 +20,8 @@ class ReTweeter:
 			
 		if self._should_favotrite(tweet):
 			self.api.favorite(tweet)
+			
+		time.sleep(self.SLEEP)
 		
 	def _shoud_follow(self, tweet):
 		return self._tweet_contains_keyword(tweet, self.follow_keywords)
