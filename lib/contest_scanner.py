@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import pickle
 
 class ContestScanner:
 
@@ -43,3 +44,13 @@ class ContestScanner:
 			return False
 			
 		return True
+		
+	def _cache_scanned_ids(self):
+		with open('tweeted.pickle', 'wb') as f:
+			pickle.dump(self.scanned_ids.keys(), f)	
+			
+	def _load_cached_scanned_ids(self):
+		with open('tweeted.pickle', 'rb') as f:
+			ids = pickle.load(f)
+			for id in ids:
+				self.scanned_ids[id] = True
