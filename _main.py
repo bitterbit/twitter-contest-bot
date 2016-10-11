@@ -1,6 +1,7 @@
 from TwitterAPI import TwitterAPI
-from lib.SafeTwitter import SafeTwitter
-from lib.ReTweeter import ReTweeter
+from lib.safe_twitter import SafeTwitter
+from lib.retweeter import ReTweeter
+from lib.contest_scanner import ContestScanner
 import threading
 import time
 import json
@@ -24,11 +25,16 @@ search_queries = data["search-queries"]
 follow_keywords = data["follow-keywords"]
 fav_keywords = data["fav-keywords"]
 
+print "consumer_key: ", consumer_key
+print "consumer_secret ", consumer_secret
+print "access_token_key", access_token_key
+print "access_token_secret", access_token_secret
 tweet_api = TwitterAPI(consumer_key, consumer_secret, access_token_key, access_token_secret)
 
 
 class TweeterBotMain(object):
     def __init__(self):
+        print "tweet api ", tweet_api
         safe_api = SafeTwitter(min_ratelimit_search, min_ratelimit_post, tweet_api)
         self.scanner = ContestScanner(safe_api)
         self.retweeter = ReTweeter(safe_api, fav_keywords, follow_keywords)
