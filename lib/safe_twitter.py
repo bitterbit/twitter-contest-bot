@@ -1,5 +1,6 @@
 from TwitterAPI import TwitterAPI
 
+<<<<<<< HEAD
 class safeTwitter(object):
     rate_limit_precent = 100
 
@@ -53,3 +54,18 @@ class safeTwitter(object):
         _check_rate_limit_search()
         r = api.request('search/tweets', {'q':search_query, 'result_type':"mixed", 'count':count})
 	CheckError(r)
+=======
+class SafeTwitter(object):
+    
+    def Retweet(self, tweet):
+        """ Returns status """
+        pass
+
+    def Favorite(self, tweet):
+        """ Returns status """
+        pass
+
+    def Query(self, serch_query, count):
+        """ Returns []lib.tweet """
+        pass
+>>>>>>> d00344b3d2c888b92faa2e851ceca06a18e80021
