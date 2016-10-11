@@ -1,14 +1,16 @@
 from TwitterAPI import TwitterAPI
+from tweet import Tweet
 
-class safeTwitter(object):
-    rate_limit_precent = 100
+class SafeTwitter(object):
 
     def _check_error( self, r ):
 	r = r.json()
 	if 'errors' in r:
 	    print("We got an error message: " + r['errors'][0]['message'] + " Code: " + str(r['errors'][0]['code']) )
 	    #sys.exit(r['errors'][0]['code'])
-
+            return True
+        return False
+    
     def _check_rate_limit_search(self):
 	
 	r = api.request('application/rate_limit_status').json()
@@ -51,5 +53,10 @@ class safeTwitter(object):
 
     def serch_tweets(self, serch_query, count):
         _check_rate_limit_search()
+        tweets = []
         r = api.request('search/tweets', {'q':search_query, 'result_type':"mixed", 'count':count})
-	CheckError(r)
+	error = CheckError(r)
+        if not error:
+            for tweet_item in r:
+                tweets.append(Tweet(tweet_item))
+        return tweets
