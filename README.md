@@ -1,16 +1,10 @@
 # twitter-contest-bot
 Will poll for Retweet Contests and retweet them. Inspired by http://www.hscott.net/twitter-contest-winning-as-a-service/
+Uses Naive Bayes Machine Learning to better pick tweets to retweet :)
 
-[![Build Status](https://travis-ci.org/kurozael/twitter-contest-bot.svg?branch=master)](https://travis-ci.org/kurozael/twitter-contest-bot)
+[![Build Status](https://travis-ci.org/bitterbit/twitter-contest-bot.svg?branch=master)](https://travis-ci.org/bitterbit/twitter-contest-bot)
 
-Donate
-------------
 
-If you're feeling kind, feel free to throw some cash my way for a beer!
-
-<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=G4J6TEGJ7X2WE">
-<img src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif"/>
-</a>
 
 Disclaimer
 ------------
@@ -26,18 +20,21 @@ Prerequisites
 ------------
 
   * TwitterAPI
+  * textblob
   * Python 2.7
   
 Configuration
 ------------
 
-Open up `config.json` and make the values correspond to your Twitter API credentials.
+Open up `lib/config.py` and make the values correspond to your Twitter API credentials.
 
 Installation
 ------------
 From the command line:
 
 	pip install TwitterAPI
+	pip install -U textblob nltk
+	python -m textblob.download_corpora
 	
 Then run:
 
