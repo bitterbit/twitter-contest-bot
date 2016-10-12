@@ -1,9 +1,9 @@
 import pickle
 import os.path
+from datetime import datetime
 from textblob.classifiers import NaiveBayesClassifier
 
-class TweetFilter():
-	
+class TweetContestFilter():
 	CLASSIFIER_DATA_PATH = 'tweet_classifier.pickle'
 	
 	def __init__(self):
@@ -16,3 +16,17 @@ class TweetFilter():
 		
 	def filter(self, tweet):
 		return self.classifier.classify(tweet.get_text())
+		
+		
+class TweetAgeFilter():
+	def filter(self, tweet):
+		if datetime.now() - tweet.created_at > timedelta(days=self.MAX_TIME_DELTA_DAYS):
+			return False
+		return True
+		
+		
+class TweetRTCountFilter():
+	def filter(self, tweet):
+		if tweet.retweet_count <= 0:
+			return False
+		return True
