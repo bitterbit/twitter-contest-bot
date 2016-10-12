@@ -71,7 +71,7 @@ class SafeTwitter(object):
 
     def serch_tweets(self, search_query, count):
         self._check_rate_limit_search()
-        tweets = []
+        tweets = []        
         r = self.api.request(
             'search/tweets', {'q': search_query, 'result_type': "mixed", 'count': count})
         error = self._check_error(r)

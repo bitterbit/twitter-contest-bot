@@ -2,10 +2,6 @@ from datetime import datetime
 
 class Tweet:
     def __init__(self, twitter_item):
-        self.id = ''
-        self.text = ''
-        self.author_id = ''
-        self.author_name = ''
         self.is_retweet = False
         self.retweet_count = 0
         self._parse_twitter_item(twitter_item)
