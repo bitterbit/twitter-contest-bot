@@ -15,6 +15,10 @@ class Tweet:
     def get_text(self):
         return self.text
 
+    def __str__(self):
+        tweet_text = ''.join([i if ord(i) < 128 else ' ' for i in self.text])
+        return "tweet_id={0} tweet_text={1}".format(self.id, tweet_text)
+
     def _parse_twitter_item(self, item):
         # text, id, user, screen_name
         self.text =  item['text'].replace("\n","")

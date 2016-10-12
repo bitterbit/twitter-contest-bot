@@ -4,7 +4,8 @@ from tweet import Tweet
 
 class SafeTwitter(object):
 
-    def __init__(self, min_ratelimit_search, min_ratelimit_post, twitter_api):
+    def __init__(self,logger, min_ratelimit_search, min_ratelimit_post, twitter_api):
+        self.logger = logger
         self.min_search_rate_limit = min_ratelimit_search
         self.min_post_rate_limit = min_ratelimit_post
         self.api = twitter_api
@@ -14,6 +15,7 @@ class SafeTwitter(object):
             r = r.json()
             print("We got an error message: " +
                   r['errors'][0]['message'] + " Code: " + str(r['errors'][0]['code']))
+            self.logger.error(r['errors'][0]['message'])
             return True
         return False
 
@@ -30,6 +32,7 @@ class SafeTwitter(object):
                 print "ERROR"
             elif percent < min_percent:
                 print "post rate limit too low: ", precent, " want: ", min_percent, " waiting", sleep, "sec"
+                self.logger.warn("post rate limit too low: {0}, want: {1}, waiting: {2} seconds".format(precent, min_percent, sleep))
                 time.sleep(sleep)
             else:
                 return
@@ -54,12 +57,14 @@ class SafeTwitter(object):
         self._check_rate_limit_post()
         r = self.api.request('statuses/retweet/:' + str(tweet.get_id()))
         print "retweet to tweed id: ", str(tweet.get_id()), " text: ", tweet.get_text()
+        self.logger.info("action={0} {1}".format("retweet", tweet))
         self._check_error(r)
 
     def favorite(self, tweet):
         self._check_rate_limit_post()
         r = self.api.request('favorites/create', {'id': tweet.get_id()})
         print "favorite tweet id: ", tweet.get_id()
+        self.logger.info("action={0} {1} ".format("favorite", tweet))
         self._check_error(r)
 
     def follow(self, tweet):
@@ -67,11 +72,12 @@ class SafeTwitter(object):
         r = self.api.request('friendships/create',
                              {'screen_name': tweet.username})
         print "follow tweet id: ", tweet.get_id()
+        self.logger.info("action={0} {1}".format("follow", tweet))
         self._check_error(r)
 
     def serch_tweets(self, search_query, count):
         self._check_rate_limit_search()
-        tweets = []        
+        tweets = []
         r = self.api.request(
             'search/tweets', {'q': search_query, 'result_type': "mixed", 'count': count})
         error = self._check_error(r)
@@ -79,4 +85,5 @@ class SafeTwitter(object):
             for tweet_item in r:
                 tweets.append(Tweet(tweet_item))
         print "found ", len(tweets), " new tweets for ", search_query, " query"
+        self.logger.info("action={0} num_of_tweets={1}".format("finish_scan", len(tweets)))
         return tweets
