@@ -9,19 +9,32 @@ import time
 import json
 import os.path
 import sys
-
+import logging
 
 class TweeterBotMain(object):
     def __init__(self):
         config = Config()
+        self.config = config
+        logger = self._prepare_logger(config.log_path)
         tweet_api = TwitterAPI(config.consumer_key, config.consumer_secret, config.access_token_key, config.access_token_secret)
-        safe_api = SafeTwitter(config.min_ratelimit_search, config.min_ratelimit_post, tweet_api)
+        
+        safe_api = SafeTwitter(logger, config.min_rate_limit_search, config.min_rate_limit_post, tweet_api)
         self.scanner = ContestScanner(safe_api)
-        self.retweeter = ReTweeter(safe_api, fav_keywords, follow_keywords)
+        self.retweeter = ReTweeter(safe_api, config.keywords_fav, config.keywords_follow)
 
     def run(self):
-        relevant_tweets = self.scanner.scan(search_queries)
+        relevant_tweets = self.scanner.scan(self.config.search_queries)
         self.retweeter.retweet_all(relevant_tweets)
+        
+    def _prepare_logger(self, path):
+    	logger = logging.getLogger('spam_application')
+    	logger.setLevel(logging.DEBUG)
+    	fh = logging.FileHandler(path)
+    	fh.setLevel(logging.DEBUG)
+    	formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    	fh.setFormatter(formatter)
+    	logger.addHandler(fh)
+    	return logger
 
 
 if __name__ == "__main__":

@@ -5,8 +5,10 @@ from TwitterAPI import TwitterAPI
 from lib.safe_twitter import SafeTwitter
 from lib.config import Config 
 
-TRAIN_FILE_NAME = "ml/train.json"
+TRAIN_FILE_NAME = "files/dataset.json"
 TRAIN_QUERY = "WIN"
+
+DATASET_SIZE = 10
 
 
 class Trainer(object):
@@ -14,7 +16,7 @@ class Trainer(object):
         self.api = api
 
     def fetch_tweets(self, query):
-        tweets = self.api.serch_tweets(query, 10)
+        tweets = self.api.serch_tweets(query, DATASET_SIZE)
         return [t.get_clean_text() for t in tweets]
 
 
@@ -61,7 +63,7 @@ if __name__ == "__main__":
     config = Config()
     
     tweet_api = TwitterAPI(config.consumer_key, config.consumer_secret, config.access_token_key, config.access_token_secret)
-    safe_api = SafeTwitter(logger, config.min_ratelimit_post, config.min_ratelimit_search, tweet_api)
+    safe_api = SafeTwitter(logger, config.min_rate_limit_post, config.min_rate_limit_search, tweet_api)
     
     data_store = Trainer(safe_api)
     data_store.train(TRAIN_QUERY)

@@ -15,5 +15,5 @@ class Config:
 		self.access_token_key = "785893095581757440-cLlr6U3MihnjyeZHS1jBn4cUgK4yx44"
 		self.access_token_secret = "Ec6yS4Kki72JcNIDCBXmfjifdq5RYSAdk9tdCzFAh1GWo"
 		
-		self.log_path = 'info.log'
+		self.log_path = 'files/info.log'
 		
