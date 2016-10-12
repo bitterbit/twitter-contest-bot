@@ -1,6 +1,7 @@
-from datetime import datetime, timedelta
 import pickle
 import os.path
+from datetime import datetime, timedelta
+from tweet_filter import TweetContestFilter, TweetAgeFilter, TweetRTCountFilter 
 
 class ContestScanner:
 
@@ -11,6 +12,8 @@ class ContestScanner:
 		self.api = api
 		self.scanned_ids = dict()
 		self._load_cached_scanned_ids()
+		
+		self.filters = [TweetContestFilter(), TweetAgeFilter(), TweetRTCountFilter()]
 
 	def scannAll(self, queries):
 		results = []
@@ -40,12 +43,9 @@ class ContestScanner:
 		return False
 
 	def _is_valid(self, tweet):
-		if tweet.retweet_count <= 0:
-			return False
-
-		if datetime.now() - tweet.created_at > timedelta(days=self.MAX_TIME_DELTA_DAYS):
-			return False
-
+		for filter in self.filters:
+			if not filter.filter(tweet):
+				return False
 		return True
 
 	def _cache_scanned_ids(self):
