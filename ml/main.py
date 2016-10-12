@@ -1,5 +1,6 @@
 import json
 from random import shuffle
+import pickle
 from textblob.classifiers import NaiveBayesClassifier
 
 def load_sample():
@@ -15,6 +16,16 @@ def print_item(item):
 	print "real:", item[1]
 	print '-------------------------------'
 
+def _ask_about_result():
+	i = raw_input("are you satistfied ? ")
+	if i == "y":
+		return True
+	if i == 'n':
+		return False
+	else:
+		print " y or n please"
+		return self._ask_about_result()
+
 if __name__ == '__main__':
 	print "Hello"
 
@@ -24,9 +35,14 @@ if __name__ == '__main__':
 	train = data[:splitIndex]
 	test = data[splitIndex:]
 
-
 	cl = NaiveBayesClassifier(train)
 
-	print "accuarciy", cl.accuracy(test)
 	for item in test:
 		print_item(item)
+
+	print "accuarciy", cl.accuracy(test)
+
+	happy = _ask_about_result()
+	if happy:
+		with open('classifier.pickle', "wb") as f:
+			pickle.dump(cl, f)

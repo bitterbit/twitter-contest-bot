@@ -4,7 +4,7 @@ import os.path
 from TwitterAPI import TwitterAPI
 from lib.safe_twitter import SafeTwitter
 
-TRAIN_FILE_NAME = "train.json"
+TRAIN_FILE_NAME = "ml/train.json"
 TRAIN_QUERY = "WIN"
 
 
