@@ -3,6 +3,7 @@ import json
 import os.path
 from TwitterAPI import TwitterAPI
 from lib.safe_twitter import SafeTwitter
+from lib.config import Config 
 
 TRAIN_FILE_NAME = "ml/train.json"
 TRAIN_QUERY = "WIN"
@@ -54,24 +55,13 @@ class Trainer(object):
             with open(TRAIN_FILE_NAME, mode='w') as f:
                 f.write(json.dumps(feeds, indent=4))
 
-# Load our configuration from the JSON file.
-with open('config.json') as data_file:
-	data = json.load(data_file)
-
-# These vars are loaded in from config.
-consumer_key = data["consumer-key"]
-consumer_secret = data["consumer-secret"]
-access_token_key = data["access-token-key"]
-access_token_secret = data["access-token-secret"]
-scan_update_time = data["scan-update-time"]
-min_ratelimit_post = data["min-ratelimit-post"]
-min_ratelimit_search = data["min-ratelimit-search"]
-search_queries = data["search-queries"]
-
-tweet_api = TwitterAPI(consumer_key, consumer_secret, access_token_key, access_token_secret)
 
 if __name__ == "__main__":
     logger = logging.getLogger()
-    safe_api = SafeTwitter(logger, min_ratelimit_post, min_ratelimit_search, tweet_api)
+    config = Config()
+    
+    tweet_api = TwitterAPI(config.consumer_key, config.consumer_secret, config.access_token_key, config.access_token_secret)
+    safe_api = SafeTwitter(logger, config.min_ratelimit_post, config.min_ratelimit_search, tweet_api)
+    
     data_store = Trainer(safe_api)
     data_store.train(TRAIN_QUERY)
