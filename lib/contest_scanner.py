@@ -1,18 +1,16 @@
 import pickle
 import os.path
-from datetime import datetime, timedelta
-from tweet_filter import TweetContestFilter, TweetAgeFilter, TweetRTCountFilter 
+from tweet_filter import TweetContestFilter, TweetAgeFilter, TweetRTCountFilter
 
 class ContestScanner:
 
 	MAX_RESULTS = 100
-	MAX_TIME_DELTA_DAYS = 10
 
 	def __init__(self, api):
 		self.api = api
 		self.scanned_ids = dict()
 		self._load_cached_scanned_ids()
-		
+
 		self.filters = [TweetContestFilter(), TweetAgeFilter(), TweetRTCountFilter()]
 
 	def scannAll(self, queries):
@@ -37,7 +35,7 @@ class ContestScanner:
 	def _add(self, tweet):
 		self.scanned_ids[tweet.get_id()] = True
 
-	def _exists(self, tweet):		
+	def _exists(self, tweet):
 		if tweet.get_id() in self.scanned_ids:
 			return True
 		return False
